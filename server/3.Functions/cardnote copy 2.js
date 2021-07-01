@@ -4,9 +4,8 @@ const { folders, cards } = require("../1.Modal/cardnote.js")
 // FOR FETCH ALL DATA
 const fetchAll = async (req, res) => {
   try {
-    const author = req.userId
-    const newFolders = await folders(author).find()
-    const newCards = await cards(author).find()
+    const newFolders = await folders.find()
+    const newCards = await cards.find()
     res.status(200).json(newFolders.concat(newCards))
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -15,9 +14,8 @@ const fetchAll = async (req, res) => {
 
 const fetchAllTrash = async (req, res) => {
   try {
-    const author = req.userId
-    const tempFolders = await folders(author).find({ trash: true })
-    const tempCards = await cards(author).find({ trash: true })
+    const tempFolders = await folders.find({ trash: true })
+    const tempCards = await cards.find({ trash: true })
     res.status(200).json(tempFolders.concat(tempCards))
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -30,14 +28,8 @@ const fetchOneDirectory = async (req, res) => {
     const author = req.userId
     let { parent } = req.params
     if (!parent) return res.json({ message: "id is null" })
-    const fetchFolders = await folders(author).find({
-      parent,
-      trash: false,
-    })
-    const fetchCards = await cards(author).find({
-      parent,
-      trash: false,
-    })
+    const fetchFolders = await folders.find({ parent, author, trash: false })
+    const fetchCards = await cards.find({ parent, author, trash: false })
     const fetchData = { folders: fetchFolders, cards: fetchCards }
     if (!fetchData) return res.status(200).json([])
     res.status(200).json(fetchData)
@@ -50,30 +42,30 @@ const fetchOneDirectory = async (req, res) => {
 const postData = async (req, res) => {
   try {
     const { title, data, type } = req.body
-    console.log("1")
     let { parent } = req.body
     const author = req.userId
     if (!parent || !title || !type)
       return res.status(400).json({ message: `some value are null` })
 
     let insertedItem
-    console.log("2", author)
     if (type === "folder") {
-      insertedItem = await folders(author).create({
+      const folder = new folders({
         title,
         parent,
         author,
       })
+      insertedItem = await folder.save()
 
       res.status(200).json(insertedItem)
     } else if (type === "card") {
       if (!data) res.status(400).json({ message: "data is null" })
-      insertedItem = await cards(author).create({
+      const card = new cards({
         title,
         data,
         parent,
         author,
       })
+      insertedItem = await card.save()
 
       res.status(200).json(insertedItem)
     }
@@ -85,15 +77,14 @@ const postData = async (req, res) => {
 // TO DELETE ELEMENTS
 const deleteElements = async (req, res) => {
   try {
-    const author = req.userId
     const { deletelist } = req.body
     if (!deletelist) res.status(400).json({ message: "id is null" })
-    await folders(author).deleteMany({
+    await folders.deleteMany({
       _id: {
         $in: deletelist,
       },
     })
-    await cards(author).deleteMany({
+    await cards.deleteMany({
       _id: {
         $in: deletelist,
       },
@@ -109,20 +100,18 @@ const deleteElements = async (req, res) => {
 const moveToTrash = async (req, res) => {
   try {
     const { itemlist } = req.body
-    const author = req.userId
-
     if (!itemlist) return res.json({ message: "item is null" })
-    const tempFolder = await folders(author).updateMany(
+    const tempFolder = await folders.updateMany(
       { _id: { $in: itemlist } },
       {
-        $set: { trash: true, editedtime: Date.now() },
+        $set: { trash: true },
       },
       { alter: true }
     )
-    const tempCard = await cards(author).updateMany(
+    const tempCard = await cards.updateMany(
       { _id: { $in: itemlist } },
       {
-        $set: { trash: true, editedtime: Date.now() },
+        $set: { trash: true },
       },
       { alter: true }
     )
@@ -136,20 +125,18 @@ const moveToTrash = async (req, res) => {
 const restoreToTrash = async (req, res) => {
   try {
     const { itemlist } = req.body
-    const author = req.userId
-
     if (!itemlist) return res.json({ message: "item is null" })
-    const tempFolder = await folders(author).updateMany(
+    const tempFolder = await folders.updateMany(
       { _id: { $in: itemlist } },
       {
-        $set: { trash: false, editedtime: Date.now() },
+        $set: { trash: false },
       },
       { alter: true }
     )
-    const tempCard = await cards(author).updateMany(
+    const tempCard = await cards.updateMany(
       { _id: { $in: itemlist } },
       {
-        $set: { trash: false, editedtime: Date.now() },
+        $set: { trash: false },
       },
       { alter: true }
     )
@@ -163,13 +150,12 @@ const restoreToTrash = async (req, res) => {
 const renameFolder = async (req, res) => {
   try {
     const { id, newtitle } = req.body
-    const author = req.userId
     if (!id || !newtitle)
       return res.status(400).json({ message: "id or new title is null" })
-    const newFolder = await folders(author).updateOne(
+    const newFolder = await folders.updateOne(
       { _id: id },
       {
-        $set: { title: newtitle, editedtime: Date.now() },
+        $set: { title: newtitle },
       }
     )
     res.status(200).json(newFolder)
@@ -182,14 +168,12 @@ const renameFolder = async (req, res) => {
 const renameCard = async (req, res) => {
   try {
     const { id, newtitle, newdata } = req.body
-    const author = req.userId
-
     if (!id || !newtitle || !newdata)
       return res.status(400).json({ message: "id or new title is null" })
-    const newCard = await cards(author).updateOne(
+    const newCard = await cards.updateOne(
       { _id: id },
       {
-        $set: { title: newtitle, data: newdata, editedtime: Date.now() },
+        $set: { title: newtitle, data: newdata },
       }
     )
     res.status(200).json(newCard)

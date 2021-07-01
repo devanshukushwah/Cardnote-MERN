@@ -47,16 +47,15 @@ Content-Type: application/json
     "type":"card",
     "id":"60b8d5830d1b7833184ea7fd"
 }
-### push folder
+###
 POST http://localhost:5000/cardnote-api
 Content-Type: application/json
 
 {
     "title":"dadu5",
     "type":"folder",
-    "parent":"60cf1e266633dd0d2c8b56ca"
+    "id":"homepage"
 }
-
 
 ### push card
 POST http://localhost:5000/cardnote-api

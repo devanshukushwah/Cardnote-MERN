@@ -13,9 +13,9 @@ const {
   fetchAllTrash,
 } = require("../3.Functions/cardnote.js")
 
-router.get("/", auth, fetchAll)
+router.get("/", fetchAll)
 router.get("/trash", auth, fetchAllTrash)
-router.get("/:parent", auth, fetchOneDirectory)
+router.get("/:id", auth, fetchOneDirectory)
 router.post("/", auth, postData)
 router.put("/folder", auth, renameFolder)
 router.put("/card", auth, renameCard)
