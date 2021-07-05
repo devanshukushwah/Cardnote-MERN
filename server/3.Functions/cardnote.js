@@ -1,4 +1,3 @@
-require("dotenv").config()
 const { folders, cards } = require("../1.Modal/cardnote.js")
 
 // FOR FETCH ALL DATA

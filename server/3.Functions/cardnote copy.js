@@ -1,4 +1,3 @@
-require("dotenv").config()
 const { folders, cards, directories } = require("../1.Modal/cardnote.js")
 // THIS IS FOR HOMEPAGE
 const ID = "60b493bb4683f3112857e7e2"
