@@ -1,0 +1,19 @@
+{
+  "name": "cardnote",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000C\u0000a\u0000r\u0000d\u0000n\u0000o\u0000t\u0000e\u0000-\u0000M\u0000E\u0000R\u0000N\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devanshukushwah/Cardnote-MERN.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devanshukushwah/Cardnote-MERN/issues"
+  },
+  "homepage": "https://github.com/devanshukushwah/Cardnote-MERN#readme"
+}
