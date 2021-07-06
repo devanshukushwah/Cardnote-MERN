@@ -49,14 +49,12 @@ const fetchOneDirectory = async (req, res) => {
 const postData = async (req, res) => {
   try {
     const { title, data, type } = req.body
-    console.log("1")
     let { parent } = req.body
     const author = req.userId
     if (!parent || !title || !type)
       return res.status(400).json({ message: `some value are null` })
 
     let insertedItem
-    console.log("2", author)
     if (type === "folder") {
       insertedItem = await folders(author).create({
         title,
