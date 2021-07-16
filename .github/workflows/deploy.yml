@@ -12,10 +12,9 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 16
-        # - run: cd client
-        working-directory: client
       - run: npm install
       - run: npm run build
+        working-directory: ./client
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
