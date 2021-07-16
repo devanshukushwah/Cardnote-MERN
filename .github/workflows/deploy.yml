@@ -7,13 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-      working-directory: ./client
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: 16
         # - run: cd client
+        working-directory: client
       - run: npm install
       - run: npm run build
       - uses: w9jds/firebase-action@master
